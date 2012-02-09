@@ -46,11 +46,10 @@ class HEADST4WP {
         register_deactivation_hook(__FILE__, array(&$this, 'unset_headline_split_options'));
     }
 
-
     function action_plugins_loaded() {
         if (is_admin()) {
             require_once(ABSPATH . 'wp-admin/includes/template.php'); // Needed for add_meta_box()
-            add_meta_box('headsplittest_section', 'Set Alternate Headline', array(&$this, 'meta_box_post'), 'post', 'normal', 'high');
+	        add_action( 'add_meta_boxes', array( &$this, 'add_headline_meta_box' ) );
             add_action('save_post', array(&$this, 'action_save_post'), 1, 2);
 			add_action('admin_menu', array(&$this, 'modify_menu'));
         } else {
@@ -348,6 +347,10 @@ class HEADST4WP {
         }
     }
 
+    function add_headline_meta_box()
+    {
+        add_meta_box('headsplittest_section', 'Set Alternate Headline', array(&$this, 'meta_box_post'), 'post', 'normal', 'high');
+    }
 
     function meta_box_post($post) {
         $options = get_post_meta($post->ID, $this->meta, true);
